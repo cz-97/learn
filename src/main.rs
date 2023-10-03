@@ -3,10 +3,9 @@ use std::fs::{read_to_string, write};
 use std::io;
 
 /// > 进入SumatraPDF后打开高级设置, 生成SumatraPDF-settings.txt
-/// 
+///
 /// > 然后将change-theme.exe放在可执行文件所在目录
 fn main() -> io::Result<()> {
-
     let path = "./SumatraPDF-settings.txt";
 
     let colors = [
