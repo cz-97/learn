@@ -1,39 +1,19 @@
-#![windows_subsystem = "windows"]
-use std::fs::{read_to_string, write};
-use std::io;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::thread;
+use std::time::Duration;
 
-/// > 进入SumatraPDF后打开高级设置, 生成SumatraPDF-settings.txt
-///
-/// > 然后将change-theme.exe放在可执行文件所在目录
-fn main() -> io::Result<()> {
-    let path = "./SumatraPDF-settings.txt";
-
-    let colors = [
-        [
-            "MainWindowBackground = #80fff200",
-            "TextColor = #000000",
-            "BackgroundColor = #ffffff",
-        ],
-        [
-            "MainWindowBackground = #3B3B3B",
-            "TextColor = #ffffff",
-            "BackgroundColor = #3B3B3B",
-        ],
-    ];
-
-    let s = read_to_string(path)?;
-
-    let x = match s.find(colors[0][1]) {
-        Some(_) => 0,
-        None => 1,
-    };
-
-    write(
-        path,
-        s.replace(colors[x][0], colors[1 - x][0])
-            .replace(colors[x][1], colors[1 - x][1])
-            .replace(colors[x][2], colors[1 - x][2]),
-    )?;
-
-    Ok(())
+fn main() {
+    static R: AtomicU64 = AtomicU64::new(0);
+    // 创建一个子线程
+    thread::spawn(move || {
+        // 循环自增
+        loop {
+            R.fetch_add(1, Ordering::Relaxed);
+        }
+        // 通过通道发送这个整数
+    });
+    // 主线程等待3秒
+    thread::sleep(Duration::from_secs(1));
+    // 尝试从通道中获取子线程的结果
+    println!("{}",R.load(Ordering::Relaxed));
 }
