@@ -3,7 +3,7 @@ use std::thread;
 use std::time::Duration;
 
 fn main() {
-    static R: AtomicU64 = AtomicU64::new(0);
+    static R: AtomicU64 = AtomicU64::new(1);
     // 创建一个子线程
     thread::spawn(move || {
         // 循环自增
